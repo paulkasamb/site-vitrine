@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services Informatiques — René Kasamba René</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0A0E16;
+    --bg-1:#111726;
+    --bg-panel:#161E30;
+    --line:#2A3448;
+    --line-bright:#3E4C68;
+    --steel:#8993A8;
+    --text:#E9ECF3;
+    --text-dim:#9AA3B7;
+    --copper:#C67A45;
+    --copper-bright:#E0955C;
+    --blue:#4A90D9;
+    --ok:#4FAE7E;
+    --radius: 3px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-0);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .display{font-family:'Space Grotesk', sans-serif;}
+
+  /* background texture: faint blueprint grid */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.12;
+  }
+
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,14,22,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{display:flex; align-items:center; justify-content:space-between; padding:18px 28px; max-width:1100px; margin:0 auto;}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo-mark{width:30px; height:30px; flex-shrink:0;}
+  .logo-text{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:16px; letter-spacing:0.02em;}
+  .logo-text .sub{display:block; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--copper); letter-spacing:0.12em; font-weight:500;}
+  .nav-links{display:flex; gap:32px; font-size:14px; color:var(--text-dim);}
+  .nav-links a{transition:color 0.2s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:500;
+    border:1px solid var(--copper); color:var(--copper-bright);
+    padding:8px 16px; border-radius:var(--radius); transition:all 0.2s;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--copper); color:var(--bg-0);}
+  .nav-mobile-toggle{display:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; padding:64px 0 40px; overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1fr 340px; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em;
+    color:var(--copper-bright); text-transform:uppercase;
+    border:1px solid var(--line-bright); padding:6px 12px; border-radius:var(--radius);
+    margin-bottom:24px;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--ok); box-shadow:0 0 8px var(--ok); animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+  h1{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size:clamp(34px, 5vw, 54px); line-height:1.06; letter-spacing:-0.01em;
+    margin-bottom:20px;
+  }
+  h1 .accent{color:var(--copper-bright);}
+  .hero-desc{font-size:17px; color:var(--text-dim); line-height:1.65; max-width:520px; margin-bottom:32px;}
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px;}
+  .btn-primary{
+    font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13px;
+    background:var(--copper); color:#12100D; padding:14px 24px; border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:8px; transition:background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover{background:var(--copper-bright); transform:translateY(-1px);}
+  .btn-secondary{
+    font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13px;
+    border:1px solid var(--line-bright); color:var(--text); padding:14px 24px; border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:8px; transition:border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover{border-color:var(--copper); background:var(--bg-panel);}
+
+  .hero-stats{display:flex; gap:28px;}
+  .stat .num{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:24px; color:var(--copper-bright);}
+  .stat .label{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-dim); letter-spacing:0.06em; text-transform:uppercase; margin-top:2px;}
+
+  /* portrait panel */
+  .portrait-panel{position:relative;}
+  .portrait-frame{
+    position:relative; border:1px solid var(--line-bright); border-radius:var(--radius);
+    overflow:hidden; background:var(--bg-panel);
+  }
+  .portrait-frame img{width:100%; display:block; filter:saturate(0.9) contrast(1.05);}
+  .portrait-frame::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(10,14,22,0.92) 100%);
+  }
+  .corner{position:absolute; width:16px; height:16px; z-index:2; border-color:var(--copper);}
+  .corner.tl{top:-1px; left:-1px; border-top:2px solid; border-left:2px solid;}
+  .corner.tr{top:-1px; right:-1px; border-top:2px solid; border-right:2px solid;}
+  .corner.bl{bottom:-1px; left:-1px; border-bottom:2px solid; border-left:2px solid;}
+  .corner.br{bottom:-1px; right:-1px; border-bottom:2px solid; border-right:2px solid;}
+  .portrait-tag{
+    position:absolute; bottom:14px; left:14px; right:14px; z-index:2;
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim);
+  }
+  .portrait-tag .name{color:var(--text); font-size:14px; font-weight:600; font-family:'Space Grotesk',sans-serif; display:block; margin-bottom:2px;}
+
+  /* ---------- BOOT STRIP (signature element) ---------- */
+  .boot-strip{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:var(--bg-1);
+    padding:16px 0; overflow:hidden; position:relative;
+  }
+  .boot-track{
+    display:flex; gap:48px; white-space:nowrap;
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--text-dim);
+    animation:scroll-left 26s linear infinite;
+    width:max-content;
+  }
+  .boot-track span.ok{color:var(--ok);}
+  .boot-track .item::before{content:"›"; color:var(--copper); margin-right:8px;}
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .boot-strip:hover .boot-track{animation-play-state:paused;}
+
+  /* ---------- SECTION HEADERS ---------- */
+  section{padding:88px 0;}
+  .sec-head{margin-bottom:48px; max-width:600px;}
+  .sec-tag{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--copper); margin-bottom:14px; display:flex; align-items:center; gap:10px;
+  }
+  .sec-tag::before{content:""; width:24px; height:1px; background:var(--copper);}
+  .sec-head h2{font-family:'Space Grotesk', sans-serif; font-size:clamp(26px,3.4vw,36px); font-weight:600; letter-spacing:-0.01em; margin-bottom:14px;}
+  .sec-head p{color:var(--text-dim); font-size:15.5px; line-height:1.65;}
+
+  /* ---------- SERVICES ---------- */
+  .modules-grid{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+  }
+  .module-card{
+    background:var(--bg-1); padding:30px 28px; position:relative;
+    transition:background 0.2s;
+  }
+  .module-card:hover{background:var(--bg-panel);}
+  .module-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;}
+  .module-id{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim); letter-spacing:0.06em;}
+  .module-icon{width:34px; height:34px; color:var(--copper-bright);}
+  .module-card h3{font-family:'Space Grotesk', sans-serif; font-size:18px; font-weight:600; margin-bottom:10px;}
+  .module-card p{font-size:14px; color:var(--text-dim); line-height:1.6;}
+
+  /* ---------- ZONE ---------- */
+  .zone{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;
+  }
+  .zone-map{
+    border:1px solid var(--line-bright); border-radius:var(--radius); padding:32px;
+    background:var(--bg-panel); position:relative; min-height:260px;
+    display:flex; flex-direction:column; justify-content:center; gap:22px;
+  }
+  .zone-point{display:flex; align-items:center; gap:14px;}
+  .zone-dot{width:10px; height:10px; border-radius:50%; background:var(--copper); flex-shrink:0; position:relative;}
+  .zone-dot::after{content:""; position:absolute; inset:-6px; border:1px solid var(--copper); border-radius:50%; opacity:0.5;}
+  .zone-point .city{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px;}
+  .zone-point .desc{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim);}
+  .zone-line{width:1px; height:24px; background:var(--line-bright); margin-left:4px;}
+
+  .list-clean{list-style:none;}
+  .list-clean li{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); font-size:14.5px; color:var(--text-dim);
+  }
+  .list-clean li:last-child{border-bottom:none;}
+  .list-clean .num{font-family:'JetBrains Mono', monospace; color:var(--copper); font-size:13px; flex-shrink:0;}
+
+  /* ---------- CONTACT ---------- */
+  .contact-panel{
+    border:1px solid var(--line-bright); border-radius:var(--radius);
+    background:var(--bg-panel); padding:48px; position:relative;
+    display:grid; grid-template-columns:1fr 1fr; gap:40px;
+  }
+  .contact-panel::before{content:""; position:absolute; top:-1px; left:-1px; width:20px; height:20px; border-top:2px solid var(--copper); border-left:2px solid var(--copper);}
+  .contact-panel::after{content:""; position:absolute; bottom:-1px; right:-1px; width:20px; height:20px; border-bottom:2px solid var(--copper); border-right:2px solid var(--copper);}
+  .contact-row{display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--line);}
+  .contact-row:last-child{border-bottom:none;}
+  .contact-row .ic{width:20px; height:20px; color:var(--copper-bright); flex-shrink:0;}
+  .contact-row .k{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--text-dim); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:3px;}
+  .contact-row .v{font-family:'Space Grotesk', sans-serif; font-size:16px; font-weight:500;}
+  .quote-box{display:flex; flex-direction:column; justify-content:center;}
+  .quote-box h3{font-family:'Space Grotesk',sans-serif; font-size:22px; margin-bottom:12px;}
+  .quote-box p{color:var(--text-dim); font-size:14.5px; line-height:1.6; margin-bottom:24px;}
+
+  /* ---------- FOOTER STRIP ---------- */
+  .footer-strip{
+    border-top:1px solid var(--line); padding:22px 0; background:var(--bg-1);
+  }
+  .footer-strip .wrap{display:flex; justify-content:center; gap:36px; flex-wrap:wrap;}
+  .footer-strip .item{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-dim); display:flex; align-items:center; gap:8px;}
+  .footer-strip .item .dot{width:5px; height:5px; border-radius:50%; background:var(--ok);}
+  footer.site-footer{padding:32px 0; text-align:center;}
+  footer.site-footer p{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text-dim);}
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{outline:2px solid var(--copper-bright); outline-offset:3px;}
+
+  @media (max-width:820px){
+    .nav-links{display:none;}
+    .hero-grid{grid-template-columns:1fr; gap:36px;}
+    .portrait-panel{max-width:320px;}
+    .modules-grid{grid-template-columns:1fr;}
+    .zone{grid-template-columns:1fr;}
+    .contact-panel{grid-template-columns:1fr; padding:32px 24px;}
+    .hero-stats{flex-wrap:wrap; row-gap:16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
+        <rect x="1" y="1" width="30" height="30" rx="2" stroke="#C67A45" stroke-width="1.5"/>
+        <path d="M16 6V10M16 22V26M6 16H10M22 16H26" stroke="#E9ECF3" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="5" stroke="#E0955C" stroke-width="1.5"/>
+        <circle cx="16" cy="16" r="1.5" fill="#E0955C"/>
+      </svg>
+      <div class="logo-text">SERVICES INFORMATIQUES
+        <span class="sub">RENÉ KASAMBA RENÉ</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#zone">Zone</a>
+      <a href="#realisations">Réalisations</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">DEVIS GRATUIT →</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> SYSTÈME OPÉRATIONNEL — DISPONIBLE POUR INTERVENTION</div>
+        <h1>Votre informaticien <span class="accent">industriel</span> à Likasi &amp; Kolwezi.</h1>
+        <p class="hero-desc">Dépannage, réseaux, automatisation et développement — une seule adresse pour vos systèmes, du poste de travail à l'objet connecté. Intervention à domicile ou à distance.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">DEMANDER UN DEVIS</a>
+          <a href="#services" class="btn-secondary">VOIR LES SERVICES</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><div class="num">08</div><div class="label">Modules de service</div></div>
+          <div class="stat"><div class="num">24H</div><div class="label">Délai de réponse</div></div>
+          <div class="stat"><div class="num">100%</div><div class="label">Devis gratuit</div></div>
+        </div>
+      </div>
+      <div class="portrait-panel">
+        <div class="portrait-frame">
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+          <img src="assets/rene-portrait-crop.jpeg" alt="René Kasamba René, technicien en informatique industrielle">
+          <div class="portrait-tag">
+            <span class="name">René Kasamba René</span>
+            Licencié en informatique industrielle — ISPT Likasi
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOT STRIP -->
+  <div class="boot-strip" aria-hidden="true">
+    <div class="boot-track">
+      <span class="item">DIAGNOSTIC PC/LAPTOP <span class="ok">OK</span></span>
+      <span class="item">FILE D'IMPRESSION <span class="ok">OK</span></span>
+      <span class="item">RÉSEAU WIFI <span class="ok">OK</span></span>
+      <span class="item">SAUVEGARDE DONNÉES <span class="ok">OK</span></span>
+      <span class="item">MODULE ESP32/ARDUINO <span class="ok">OK</span></span>
+      <span class="item">SITE VITRINE <span class="ok">OK</span></span>
+      <span class="item">ASSISTANCE À DISTANCE <span class="ok">OK</span></span>
+      <span class="item">DIAGNOSTIC PC/LAPTOP <span class="ok">OK</span></span>
+      <span class="item">FILE D'IMPRESSION <span class="ok">OK</span></span>
+      <span class="item">RÉSEAU WIFI <span class="ok">OK</span></span>
+      <span class="item">SAUVEGARDE DONNÉES <span class="ok">OK</span></span>
+      <span class="item">MODULE ESP32/ARDUINO <span class="ok">OK</span></span>
+      <span class="item">SITE VITRINE <span class="ok">OK</span></span>
+      <span class="item">ASSISTANCE À DISTANCE <span class="ok">OK</span></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-tag">Catalogue</div>
+        <h2>Huit modules d'intervention.</h2>
+        <p>Chaque service est traité comme un module indépendant — vous ne payez que ce dont vous avez besoin, avec un devis clair avant toute intervention.</p>
+      </div>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑01</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Dépannage &amp; maintenance PC/laptop</h3>
+          <p>Lenteurs, virus, pannes, mises à jour — diagnostic complet et remise en état de votre appareil.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑02</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Installation Windows, Office &amp; logiciels</h3>
+          <p>Installation propre, activation et configuration de votre système et de vos outils bureautiques.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑03</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 17h16M4 12h16M4 7h16" stroke-linecap="round"/><circle cx="8" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="10" cy="17" r="1.4" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <h3>Programmation web (sites vitrines)</h3>
+          <p>Sites de présentation professionnels pour votre activité, comme celui-ci.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑04</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="9" y="9" width="6" height="6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+          </div>
+          <h3>Domotique &amp; objets connectés</h3>
+          <p>ESP32, Arduino, Raspberry Pi — automatisation sur mesure pour votre maison ou local.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑05</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 18l6-6 6 6M4 22h16" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12V3" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Imprimante, wifi &amp; réseau</h3>
+          <p>Installation locale ou en réseau, partage entre postes, résolution des pannes de connexion.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑06</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v18M6 8l6-5 6 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Formation rapide</h3>
+          <p>Word, Excel, Internet — sessions pratiques adaptées à votre niveau et à votre rythme.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑07</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 4v6h6M20 20v-6h-6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10a8 8 0 00-14.5-4.5M4 14a8 8 0 0014.5 4.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Récupération de données &amp; sauvegarde</h3>
+          <p>Fichiers supprimés, disque endommagé, plan de sauvegarde régulier pour éviter la perte.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">MOD‑08</span>
+            <svg class="module-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="7" y="2" width="10" height="20" rx="1.5"/><path d="M11 18h2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Configuration tablettes &amp; smartphones</h3>
+          <p>Paramétrage, transfert de données, comptes et sécurité de vos appareils mobiles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZONE -->
+  <section id="zone">
+    <div class="wrap zone">
+      <div>
+        <div class="sec-tag">Zone d'intervention</div>
+        <h2 class="display" style="font-size:clamp(26px,3.4vw,36px); font-weight:600; margin-bottom:14px;">Sur place ou à distance.</h2>
+        <p style="color:var(--text-dim); font-size:15.5px; line-height:1.7; margin-bottom:28px;">Déplacement à domicile pour les interventions physiques, ou prise en main sécurisée de votre appareil pour les problèmes logiciels — vous choisissez selon la situation.</p>
+        <ul class="list-clean">
+          <li><span class="num">01</span> Diagnostic préliminaire par téléphone ou WhatsApp</li>
+          <li><span class="num">02</span> Devis gratuit, sans engagement</li>
+          <li><span class="num">03</span> Intervention sur place ou à distance</li>
+          <li><span class="num">04</span> Vérification finale avec vous avant clôture</li>
+        </ul>
+      </div>
+      <div class="zone-map">
+        <div class="zone-point"><div class="zone-dot"></div><div><span class="city">Likasi</span><br><span class="desc">ZONE PRINCIPALE</span></div></div>
+        <div class="zone-line"></div>
+        <div class="zone-point"><div class="zone-dot"></div><div><span class="city">Kolwezi</span><br><span class="desc">ZONE COUVERTE</span></div></div>
+        <div class="zone-line"></div>
+        <div class="zone-point"><div class="zone-dot"></div><div><span class="city">Environs</span><br><span class="desc">SUR DEMANDE</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REALISATIONS -->
+  <section id="realisations">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-tag">Références techniques</div>
+        <h2>Une expertise construite sur le terrain.</h2>
+        <p>Avant de lancer Services Informatiques, ces projets ont posé les bases techniques du métier.</p>
+      </div>
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">REF‑A</span>
+          </div>
+          <h3>Maintenance prédictive — Centrale hydroélectrique de N'seke</h3>
+          <p>Système de surveillance de l'électrolyte de batteries industrielles : prototype ESP32 + capteur ultrason, interface web temps réel, et solution PLC industrielle (Saia‑Burgess) avec algorithme prédictif.</p>
+        </div>
+        <div class="module-card">
+          <div class="module-top">
+            <span class="module-id">REF‑B</span>
+          </div>
+          <h3>Portail CNSS — Application web sécurisée</h3>
+          <p>Application Flask/PostgreSQL avec authentification, consultation des cotisations et simulation de pension pour les assurés.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-tag">Contact</div>
+        <h2>Décrivez votre besoin, recevez un devis.</h2>
+      </div>
+      <div class="contact-panel">
+        <div>
+          <div class="contact-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><div class="k">Téléphone</div><div class="v">+243 996 556 505</div></div>
+          </div>
+          <div class="contact-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><div class="k">WhatsApp</div><div class="v">+243 996 556 505</div></div>
+          </div>
+          <div class="contact-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><div class="k">Facebook</div><div class="v">René Kasamba René</div></div>
+          </div>
+        </div>
+        <div class="quote-box">
+          <h3>Une panne ? Un projet ?</h3>
+          <p>Écrivez directement sur WhatsApp avec une description du problème — un premier diagnostic vous sera proposé sans frais.</p>
+          <a href="https://wa.me/243996556505" class="btn-primary" style="align-self:flex-start;">CONTACTER SUR WHATSAPP →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="footer-strip">
+  <div class="wrap">
+    <div class="item"><span class="dot"></span> Intervention rapide</div>
+    <div class="item"><span class="dot"></span> Devis gratuit</div>
+    <div class="item"><span class="dot"></span> Service professionnel &amp; fiable</div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>SERVICES INFORMATIQUES — RENÉ KASAMBA RENÉ — LIKASI / KOLWEZI, RDC</p>
+</footer>
+
+</body>
+</html>
